@@ -1,70 +1,200 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { useState, useEffect } from "react"
+import { View, TextInput, Button, Text } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function Home() {
 
-export default function HomeScreen() {
+  const [text, setText] = useState("");
+  const [palabras, setPalabras] = useState<string[]>([])
+  const [indexAEditar, setIndexAEditar] = useState<number>(-1)
+  const [textoAEditar, setTextoAEditar] = useState<string>("")
+
+  // CRUD
+  async function create(list: string[]): Promise<boolean> {
+    try {
+      await AsyncStorage.setItem("lista", JSON.stringify(list))
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async function read(): Promise<string[]> {
+    const cadenaDeTexto = await AsyncStorage.getItem("lista");
+    if (cadenaDeTexto) {
+      return JSON.parse(cadenaDeTexto);
+    }
+    return []
+  }
+
+  async function update(list: string[]): Promise<boolean> {
+    try {
+      await AsyncStorage.setItem("lista", JSON.stringify(list))
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async function remove() {
+    try {
+      await AsyncStorage.removeItem("lista");
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async function agregarPalabra() {
+    // truthy y falsy
+    if (text) {
+      const list = await read();
+      list.push(text);
+      setText("");
+      update(list);
+      setPalabras(list)
+    }
+  }
+
+  async function initialFunction() {
+    const list = await read();
+    setPalabras(list)
+  }
+
+  async function removerElemento(posicion: number) {
+    const list = await read();
+    list.splice(posicion, 1);
+    setPalabras(list);
+    update(list)
+  }
+
+  async function editarItem() {
+    const list = await read();
+    list[indexAEditar] = textoAEditar;
+    setPalabras(list);
+    setIndexAEditar(-1);
+    setTextoAEditar("");
+    update(list)
+  }
+
+  async function eliminarTodo() {
+    await remove();
+    setPalabras([])
+  }
+
+  useEffect(
+    () => {
+      initialFunction()
+    }, // callback 
+    [] // array de dependencias
+  )
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
-}
+    <View
+      style={{
+        flex: 1
+      }}
+    >
+      <View
+        style={{
+          flex: 1
+        }}
+      >
+        {
+          palabras.map(
+            (current, index) => {
+              return (
+                <View key={index}
+                  style={{
+                    flexDirection: "row"
+                  }}
+                >
+                  {
+                    indexAEditar === index ?
+                      <TextInput
+                        value={textoAEditar}
+                        onChangeText={(newText) => setTextoAEditar(newText)}
+                        placeholder="Ingresa texto"
+                        style={{
+                          flex: 1,
+                          fontSize: 30
+                        }}
+                      />
+                      :
+                      <Text
+                        style={{
+                          fontSize: 30,
+                          flex: 1
+                        }}
+                      >{current}</Text>
+                  }
+                  <View
+                    style={{
+                      flexDirection: "row"
+                    }}
+                  >
+                    {
+                      index === indexAEditar ?
+                        <Button
+                          title="Guardar"
+                          color="blue"
+                          onPress={editarItem}
+                        />
+                        :
+                        <Button
+                          title="Editar"
+                          color="blue"
+                          onPress={() => {
+                            setIndexAEditar(index)
+                            setTextoAEditar(current)
+                          }}
+                        />
+                    }
+                    <Button
+                      title="Eliminar"
+                      color="red"
+                      onPress={() => removerElemento(index)}
+                    />
+                  </View>
+                </View>
+              )
+            }
+          )
+        }
+      </View>
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+      <View
+        style={{
+          flexDirection: "row",
+        }}
+      >
+        <TextInput
+          style={{
+            fontSize: 30,
+            flex: 1
+          }}
+          value={text}
+          onChangeText={(newText) => setText(newText)}
+          placeholder="Escribe una palabra"
+          autoFocus={true}
+        />
+        <Button
+          title="Añadir"
+          color="green"
+          onPress={agregarPalabra}
+        />
+      </View>
+      <View
+        style={{
+          paddingBottom: 30
+        }}
+      >
+        <Button 
+          title="Eliminar todo"
+          color="red"
+          onPress={eliminarTodo}
+        />
+      </View>
+    </View>
+  )
+}

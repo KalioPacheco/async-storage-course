@@ -1,50 +1,51 @@
-# Welcome to your Expo app 👋
+# Home Component - React Native with AsyncStorage
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This project is a simple React Native app that demonstrates how to manage a list of words using AsyncStorage for persistent storage. The app includes basic CRUD operations such as adding, editing, deleting individual items, and clearing the entire list. It is designed to be lightweight, making it easy to set up and run.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Add Words**: Add new words to the list through a text input.
+- **Edit Words**: Modify any word in the list with an editable input.
+- **Delete Words**: Remove individual words from the list.
+- **Clear All Words**: Clear the entire list with a single button click.
+- **Persistent Storage**: Data is stored using `AsyncStorage`, ensuring the list is saved even after the app is closed.
 
+## Technologies and Libraries
+
+- **React Native**: A framework for building native apps using React.
+- **TypeScript**: Strongly typed programming language used for type safety.
+- **AsyncStorage**: Library used for local device storage in React Native.
+
+## Prerequisites
+
+Make sure you have the following installed:
+
+- Node.js
+- npm or yarn
+- React Native CLI
+
+## Getting Started
+
+1. **Clone the repository**:
    ```bash
+   git clone <repository-url>
+2. **Navigate to the project directory**:
+   ```bash
+   cd <project-directory>
+3. **Install the dependencies**:
+   ```bash 
    npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+4. **Run the project**:
+   ```bash 
+   npm run start
+5. **Run on your mobile device** (make sure you have your emulator or physical device connected):
+   ```bash 
+   npx react-native run-android  # For Android
+   npx react-native run-ios      # For iOS
+## Dependencies
+- **react-native:** Framework for building native apps.
+- **@react-native-async-storage/async-storage:** Library for storing data on the device.
+- **react:** JavaScript library for building user interfaces.
+- **typescript:** Typed superset of JavaScript that helps catch errors early in the development.
+## Licence
+This project is licensed under the MIT License.
